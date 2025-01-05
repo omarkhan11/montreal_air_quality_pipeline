@@ -1,6 +1,6 @@
 import pandas as pd 
 import requests 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
@@ -58,9 +58,13 @@ def transformation(e):
 
 def load(df): 
     current_data = pd.read_csv('/Users/omarkhan/vdm air quality index.csv')
+    fifteen_days_filter = date.today() - timedelta(days=15)
+    # converting date to date type (reading csvs can convert to a string) 
+    current_data['date'] = pd.to_datetime(current_data['date'], format = '%Y-%m-%d')
+    current_data = current_data.loc[current_data["date"] > fifteen_days_filter ]
     if not df['composite_key'].isin(current_data['composite_key']).any(): 
         updated_load = pd.concat([current_data, df], ignore_index= True)
-        updated_load.to_csv('vdm air quality index.csv', index = False)
+        updated_load.to_csv('vdm air quality index.csv', index = False) #   change file path to fit your own
 
 #   DAG WORKFLOW
 default_args = {
