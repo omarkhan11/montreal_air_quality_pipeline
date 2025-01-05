@@ -8,7 +8,8 @@ api = 'https://donnees.montreal.ca/api/3/action/datastore_search?resource_id=9c7
 
 def extraction(): 
     """
-    
+    Returns: the extraction of the api in json format
+    Parameters: none
     """
     r = requests.get(api)
     if r.status_code == 200: 
@@ -19,7 +20,8 @@ def extraction():
 
 def transformation(e): 
     """
-    
+    Returns: transforms the json (flattens it) & creates a df respecting appropriate data types
+    Parameters: the results from the extraction 'e' (json data)
     """
     #   obtaining the needed data (flattening)
     d1 = e['result']
@@ -57,7 +59,11 @@ def transformation(e):
     return df
 
 def load(df): 
-    current_data = pd.read_csv('/Users/omarkhan/vdm air quality index.csv')
+    """
+    Returns: loads the df as a csv (file path ought to be changed for different users)
+    Parameters: a clean df which derives from transformation
+    """
+    current_data = pd.read_csv('/Users/omarkhan/vdm air quality index.csv') # change file path to fit your own
     fifteen_days_filter = date.today() - timedelta(days=15)
     # converting date to date type (reading csvs can convert to a string) 
     current_data['date'] = pd.to_datetime(current_data['date'], format = '%Y-%m-%d')
