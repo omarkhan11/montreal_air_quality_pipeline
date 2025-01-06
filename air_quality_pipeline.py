@@ -84,7 +84,7 @@ etl_dag = DAG(
     description='This is the orchestration for the air quality index from ville de montreal',
     default_args=default_args,
     schedule='@hourly',
-    catchup=False,  # to ensure if failures occur, it will catchup on missed runs
+    catchup=True,  # to ensure if failures occur, it will catchup on missed runs
 )
 
 extract_task = PythonOperator(
